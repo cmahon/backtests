@@ -1,0 +1,26 @@
+name:                  backtests
+version:               0.1.0.0
+synopsis:              Vectorized backtest examples using hmatrix
+author:                Chris Mahon
+maintainer:            cnmahon@gmail.com
+license:               BSD3
+license-file:          LICENSE
+build-type:            Simple
+cabal-version:         >=1.10
+
+executable backtests
+  main-is:             backtests.hs
+  build-depends:       base >=4.6,
+                       cassava,
+                       easyplot,
+                       hmatrix,
+                       lens,
+                       monad-primitive,
+                       pipes,
+                       pipes-bytestring,
+                       pipes-csv,
+                       pipes-safe,
+                       pipes-vector,
+                       time,
+                       vector
+  default-language:    Haskell2010
