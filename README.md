@@ -13,3 +13,7 @@ Tested on OS X with ghc 7.6.3 and cabal 1.20.
     cabal configure
     cabal build
     cabal run 
+
+## To do
+
+Streamline inefficient conversion between vectors and lists
