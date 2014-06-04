@@ -16,4 +16,5 @@ Tested on OS X with ghc 7.6.3 and cabal 1.20.
 
 ## To do
 
-Streamline inefficient conversion between vectors and lists
+* Streamline inefficient conversion between vectors and lists
+* More general framework for vectorized backtests

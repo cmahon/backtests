@@ -34,7 +34,7 @@ main = do
 
 -- Linear regression strategy inspired by http://businessforecastblog.com/predicting-the-sp-500-or-the-spy-exchange-traded-fund/
 
-runLRStrategy :: String -> (Vector Double -> Vector Double) -> (Vector Double -> Vector Double) -> Matrix Double -> IO ()
+runLRStrategy :: String -> Return -> Return -> Matrix Double -> IO ()
 runLRStrategy titleprefix freturn fcmlreturn minret = do
   (mx,my,vdtd) <- prepareData 30 freturn
   let
@@ -59,7 +59,7 @@ runLRStrategy titleprefix freturn fcmlreturn minret = do
 
 -- Kalman filter strategy
 
-runKFStrategy :: String -> (Vector Double -> Vector Double) -> (Vector Double -> Vector Double) -> Matrix Double -> IO ()
+runKFStrategy :: String -> Return -> Return -> Matrix Double -> IO ()
 runKFStrategy titleprefix freturn fcmlreturn minret = do
   (mx,my,vdtd) <- prepareData 30 freturn
   let
@@ -105,7 +105,9 @@ kalman (System f h q r) (State x p) z = State x' p' where
 
 -----------------------------------------------------------------------------
 
-prepareData :: Int -> (Vector Double -> Vector Double) -> IO (Matrix Double,Matrix Double,V.Vector String)
+--TODO: streamline inefficient conversion between lists and vectors
+
+prepareData :: Int -> Return -> IO (Matrix Double,Matrix Double,V.Vector String)
 prepareData g freturn = do
   vsp' <- V.map ((^._1) &&& (^._7)) `liftM` readCSV "gspc.csv" 
   vvx' <- V.map ((^._1) &&& (^._7)) `liftM` readCSV "vix.csv"
@@ -145,16 +147,18 @@ mergeEqual x@((xi,xv):xs) y@((yi,yv):ys)
 
 -----------------------------------------------------------------------------
 
-absReturn :: Vector Double -> Vector Double
+type Return = Vector Double -> Vector Double
+
+absReturn :: Return
 absReturn v = V.zipWith (-) (V.tail v) (V.init v)
 
-pctReturn :: Vector Double -> Vector Double
+pctReturn :: Return
 pctReturn v = (V.zipWith (-) (V.tail v) (V.init v))/(V.init v)
 
-cmlAbsReturn :: Vector Double -> Vector Double
+cmlAbsReturn :: Return
 cmlAbsReturn = V.scanl (+) 0
 
-cmlPctReturn :: Vector Double -> Vector Double
+cmlPctReturn :: Return
 cmlPctReturn = V.scanl (\x y -> x * (1+y)) 1
 
 -----------------------------------------------------------------------------
